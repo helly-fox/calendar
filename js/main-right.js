@@ -4,7 +4,7 @@ var DEMO = DEMO || {};
   DEMO.Calendar = function (config) {
     this.weekDaysName = config.daysOfWeekNames || ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun'];
     this.monthNames = config.monthNames || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-    this.tableClass = config.element || 'calendar';
+    this.tableId = config.element || '#calendar';
 
     this.render();
   };
@@ -20,7 +20,6 @@ var DEMO = DEMO || {};
 
     render: function (currentData) {
       var calendarData = this.initMonth(currentData),
-        dayMonth = 0,
         tableCell,
         calendarTable = this.__createTable(calendarData.weekNumber),
         next,
@@ -30,18 +29,18 @@ var DEMO = DEMO || {};
       tableCell = calendarTable.getElementsByTagName('td');
       this.__fillTable(tableCell, calendarData);
       this.template += calendarTable.outerHTML;
-      if (document.getElementsByTagName('table')[0]) {
-        document.getElementsByTagName('table')[0].innerHTML = calendarTable.innerHTML;
+      if (document.querySelector(this.tableId + ' table')) {
+        document.querySelector(this.tableId + ' table').innerHTML = calendarTable.innerHTML;
       } else {
         // add the event lisners here
-        document.getElementsByClassName(this.tableClass)[0].innerHTML = this.template;
-        next = document.getElementById('next');
-        prev = document.getElementById('prev');
+        document.querySelector(this.tableId).innerHTML = this.template;
+        next = document.querySelector(this.tableId + ' #next');
+        prev = document.querySelector(this.tableId + ' #prev');
         next.addEventListener('click', this.getNextMonth.bind(this, [calendarData.firstDayOfTheMonth], false));
         prev.addEventListener('click', this.getPreviousMonth.bind(this, [calendarData.firstDayOfTheMonth], false));
       }
 
-      title = document.getElementById('title');
+      title = document.querySelector(this.tableId + ' #title');
       title.innerHTML = this.monthNames[(calendarData.firstDayOfTheMonth.getMonth())] + ', ' + calendarData.firstDayOfTheMonth.getFullYear();
 
     },
@@ -165,7 +164,7 @@ var DEMO = DEMO || {};
   var calendar = new DEMO.Calendar({
     daysOfWeekNames: ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
   });
-  //var cale1 = new DEMO.Calendar({
-  //  element: 'cal'
-  //});
+  var cale1 = new DEMO.Calendar({
+    element: '#cal'
+  });
 })();
