@@ -13,9 +13,9 @@ var DEMO = DEMO || {};
     constructor: DEMO.Calendar,
 
     template: '<header class="calendar-header">' +
-    '<span id="prev" class="calendar-arrow calendar-arrow__left"><</span>' +
-    '<span id="next" class="calendar-arrow calendar-arrow__right">></span>' +
-    '<div id="title" class="calendar-title"></div>' +
+    '<span data-id="prev" class="calendar-arrow calendar-arrow__left"><</span>' +
+    '<span data-id="next" class="calendar-arrow calendar-arrow__right">></span>' +
+    '<div data-id="title" class="calendar-title"></div>' +
     '</header>',
 
     render: function (currentData) {
@@ -27,6 +27,7 @@ var DEMO = DEMO || {};
         title;
 
       tableCell = calendarTable.getElementsByTagName('td');
+      document.querySelector(this.tableId).setAttribute('class', 'calendar');
       this.__fillTable(tableCell, calendarData);
       this.template += calendarTable.outerHTML;
       if (document.querySelector(this.tableId + ' table')) {
@@ -34,13 +35,13 @@ var DEMO = DEMO || {};
       } else {
         // add the event lisners here
         document.querySelector(this.tableId).innerHTML = this.template;
-        next = document.querySelector(this.tableId + ' #next');
-        prev = document.querySelector(this.tableId + ' #prev');
+        next = document.querySelector(this.tableId + ' [data-id=next]');
+        prev = document.querySelector(this.tableId + ' [data-id=prev]');
         next.addEventListener('click', this.getNextMonth.bind(this, [calendarData.firstDayOfTheMonth], false));
         prev.addEventListener('click', this.getPreviousMonth.bind(this, [calendarData.firstDayOfTheMonth], false));
       }
 
-      title = document.querySelector(this.tableId + ' #title');
+      title = document.querySelector(this.tableId + ' [data-id=title]');
       title.innerHTML = this.monthNames[(calendarData.firstDayOfTheMonth.getMonth())] + ', ' + calendarData.firstDayOfTheMonth.getFullYear();
 
     },
@@ -163,8 +164,5 @@ var DEMO = DEMO || {};
 (function () {
   var calendar = new DEMO.Calendar({
     daysOfWeekNames: ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
-  });
-  var cale1 = new DEMO.Calendar({
-    element: '#cal'
   });
 })();
