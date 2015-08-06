@@ -2,8 +2,11 @@ var DEMO = DEMO || {};
 
 (function () {
   DEMO.Calendar = function (config) {
-    this.weekDaysName = ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun'];
-    this.monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    this.weekDaysName = config.daysOfWeekNames || ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun'];
+    this.monthNames = config.monthNames || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    this.tableClass = config.element || 'calendar';
+
+    this.render();
   };
 
   DEMO.Calendar.prototype = {
@@ -31,7 +34,7 @@ var DEMO = DEMO || {};
         document.getElementsByTagName('table')[0].innerHTML = calendarTable.innerHTML;
       } else {
         // add the event lisners here
-        document.getElementsByClassName('calendar')[0].innerHTML = this.template;
+        document.getElementsByClassName(this.tableClass)[0].innerHTML = this.template;
         next = document.getElementById('next');
         prev = document.getElementById('prev');
         next.addEventListener('click', this.getNextMonth.bind(this, [calendarData.firstDayOfTheMonth], false));
@@ -129,7 +132,7 @@ var DEMO = DEMO || {};
     __buildTableRow: function () {
       var tableRow = document.createElement('tr'),
         dayCell = 1;
-      for (; dayCell < 8; dayCell++) {
+      for (; dayCell <= 7; dayCell++) {
         tableRow.innerHTML += '<td class="calendar-cell"></td>';
       }
       return tableRow;
@@ -159,6 +162,10 @@ var DEMO = DEMO || {};
 })();
 
 (function () {
-  var calendar = new DEMO.Calendar();
-  calendar.render();
+  var calendar = new DEMO.Calendar({
+    daysOfWeekNames: ['пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс']
+  });
+  //var cale1 = new DEMO.Calendar({
+  //  element: 'cal'
+  //});
 })();
