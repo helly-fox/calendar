@@ -5,7 +5,7 @@ var DEMO = DEMO || {};
     this.weekDaysName = config.daysOfWeekNames || ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun'];
     this.monthNames = config.monthNames || ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     this.placeHolder = config.element;
-    this.initMonth();
+    this.calendarData = this.initMonth();
     if (this.placeHolder) {
       this.render();
     }
@@ -14,11 +14,11 @@ var DEMO = DEMO || {};
   DEMO.Calendar.prototype = {
     constructor: DEMO.Calendar,
 
-    calendarData: {},
-
     initMonth: function (currentMoment) {
-      this.calendarData.firstDayOfTheMonth = this.__getFirstDate(currentMoment);
-      this.calendarData.monthTable = this.__getMonthTable(this.calendarData.firstDayOfTheMonth);
+      var calendarData = {};
+      calendarData.firstDayOfTheMonth = this.__getFirstDate(currentMoment);
+      calendarData.monthTable = this.__getMonthTable(calendarData.firstDayOfTheMonth);
+      return calendarData;
     },
 
     __getFirstDate: function (dateObj) {
@@ -90,7 +90,8 @@ var DEMO = DEMO || {};
                     '<span data-id="prev" class="calendar-arrow calendar-arrow__left"><</span>' +
                     '<span data-id="next" class="calendar-arrow calendar-arrow__right">></span>' +
                     '<div data-id="title" class="calendar-title">'+
-                    this.__renderMonthName() +
+                    this.__renderMonthName() + ', ' +
+                    this.__renderYear() +
                     '</div>' +
                     '</header>';
 
@@ -144,24 +145,26 @@ var DEMO = DEMO || {};
       return this.monthNames[dateObj.getMonth()];
     },
 
+    __renderYear: function () {
+      var dateObj = new Date(this.calendarData.firstDayOfTheMonth);
+
+      return dateObj.getFullYear();
+    },
+
     getNextMonth: function () {
       var dateObj = new Date(this.calendarData.firstDayOfTheMonth);
 
       dateObj.setMonth(dateObj.getMonth() + 1);
-      this.initMonth(dateObj);
+      this.calendarData = this.initMonth(dateObj);
       this.render();
-
-      return dateObj;
     },
 
     getPreviousMonth: function () {
       var dateObj = new Date(this.calendarData.firstDayOfTheMonth);
 
       dateObj.setMonth(dateObj.getMonth() - 1);
-      this.initMonth(dateObj);
+      this.calendarData = this.initMonth(dateObj);
       this.render();
-
-      return dateObj;
     }
   };
 
