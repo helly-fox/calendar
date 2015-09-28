@@ -2,10 +2,8 @@ var DEMO = DEMO || {};
 
 (function () {
   DEMO.CalendarTemplate = function (config) {
-    this.weekDaysName = config.daysOfWeekNames || this.weekDaysName;
-    this.monthNames = config.monthNames || this.monthNames;
-    this.placeHolder = config.element;
-
+    this.weekDaysName = (config) ? (config.weekDaysName || this.weekDaysName) : this.weekDaysName;
+    this.monthNames = (config) ? (config.monthNames || this.monthNames) : this.monthNames;
   };
 
   DEMO.CalendarTemplate.prototype = {
@@ -20,16 +18,16 @@ var DEMO = DEMO || {};
       calendarElement += this.__renderTable();
       calendarElement += '</div>';
       //this.__markCurrentDay(calendarElement);
-      var a = document.querySelector(this.placeHolder);
-      a.innerHTML = calendarElement;
-      this.next = document.querySelector(this.placeHolder + ' [data-id="next"]');
-      this.prev = document.querySelector(this.placeHolder + ' [data-id = "prev"]');
+      this.calendarElement = document.createElement('div');
+      this.calendarElement.innerHTML = calendarElement;
+      this.next = this.calendarElement.querySelector('[data-id="next"]');
+      this.prev = this.calendarElement.querySelector('[data-id = "prev"]');
     },
 
     updateUI: function (calendarData) {
       this.calendarData = calendarData;
-      var table = document.querySelector(this.placeHolder + ' .calendar-table'),
-          title = document.querySelector(this.placeHolder + ' .calendar-title');
+      var table = document.querySelector('.calendar-table'),
+          title = document.querySelector('.calendar-title');
       table.outerHTML = this.__renderTable();
       title.innerHTML = this.__renderMonthName() + ', ' +
                         this.__renderYear();

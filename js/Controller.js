@@ -15,7 +15,6 @@ var DEMO = DEMO || {};
       }
 
       this.listeners[evt].push(object[callback]);
-      console.log(object + " " + evt + "has been successfully added to the observer list");
     },
 
     unsubscribe: function (object, evt, callback) {
@@ -43,6 +42,10 @@ var DEMO = DEMO || {};
           this.listeners[evt][i].call(context, args);
         }
       }
+    },
+
+    renderOnPage: function (element, content) {
+      document.querySelector(element).appendChild(content);
     }
   }
 })();
