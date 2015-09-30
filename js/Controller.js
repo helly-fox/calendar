@@ -45,7 +45,8 @@ var DEMO = DEMO || {};
     },
 
     renderOnPage: function (element, content) {
-      document.querySelector(element).appendChild(content);
+      var el = document.querySelector(element);
+      el.appendChild(content)
     }
   }
 })();

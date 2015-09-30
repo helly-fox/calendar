@@ -2,7 +2,7 @@
 
 .login {
   position: fixed;
-  top: -160px;
+  top: -180px;
   width: 330px;
   background: #202126;
   border: solid 1px #131313;
@@ -13,6 +13,17 @@
   &:hover {
     top: 0;
   }
+}
+
+.login__content,
+.login__form {
+  box-sizing: border-box;
+  height: 180px;
+}
+
+.login__row {
+  margin: 0;
+  padding: 15px 0 0;
 }
 
 .login__item {

@@ -1,50 +1,67 @@
 var DEMO = DEMO || {};
 
 (function () {
-  DEMO.Login = function (config) {
-    this.element = config.element;
-    if (this.element) {
-      this.render();
-    }
+  DEMO.Login = function () {
+    this.render();
   };
 
   DEMO.Login.prototype = {
     constructor: DEMO.Login,
-    loginFormTemplate:
-    '<div class="login">' +
-      '<div class="login__form">' +
-        '<dl class="login__row">' +
-          '<dd class="login__item">' +
-            '<input type="text" class="login__input login__input_username" id="username" placeholder="Username"/>' +
-          '</dd>' +
-        '</dl>' +
-        '<dl class="login__row">' +
-          '<dd class="login__item">' +
-            '<input type="password" class="login__input login__input_password" id="password" placeholder="Password"/>' +
-          '</dd>' +
-        '</dl>' +
-        '<dl class="login__row">' +
-          '<dd class="login__item">' +
-            '<button class="login__button">Submit</button>' +
-          '</dd>' +
-        '</dl>' +
-      '</div>' +
-      '<div class="login__label">' +
-        '<span class="login__link">Login</span>' +
-      '</div>' +
-    '</div>',
+    user: [],
+    isAuthenticated: false,
+    loginFormTemplate: '\
+    <div class="login"> \
+    <div class="login__form"> \
+    <dl class="login__row"> \
+    <dd class="login__item"> \
+    <input type="text" class="login__input login__input_username" id="username" placeholder="Username"/> \
+    </dd> \
+    </dl> \
+    <dl class="login__row"> \
+    <dd class="login__item"> \
+    <input type="password" class="login__input login__input_password" id="password" placeholder="Password"/> \
+    </dd> \
+    </dl> \
+    <dl class="login__row"> \
+    <dd class="login__item"> \
+    <button class="login__button">Submit</button> \
+    </dd> \
+    </dl> \
+    </div> \
+    <div class="login__label"> \
+    <span class="login__link">Login</span> \
+    </div> \
+    </div>',
+    loginTemplate: ' \
+    <div class="login"> \
+    <div class="login__content">You are logged in as <span class="login__user"></span></div> \
+    <div class="login__label"> \
+    <span class="login__link">Log out</span> \
+    </div> \
+    </div>',
 
     render: function () {
-      var a = document.querySelector(this.element);
-      a.innerHTML = this.loginFormTemplate;
-      document.querySelector(this.element + ' .login__button').addEventListener('click', this.submitForm.bind(this));
+      this.loginElement = document.createElement('div');
+      this.__checkUserStatus();
+      if (this.isAuthenticated) {
+        this.loginElement.innerHTML = this.loginTemplate;
+        this.loginAction = this.loginElement.querySelector('.login__link');
+      } else {
+        this.loginElement.innerHTML = this.loginFormTemplate;
+        this.loginAction = this.loginElement.querySelector('.login__button');
+      }
     },
 
-    submitForm: function () {
+    submitLoginForm: function () {
       var data = this.__getDataFromForm(),
-        users = this.__getUsers('https://dl.dropboxusercontent.com/s/w1xcsl8s3qp38yi/users.json?dl=0');
+        users = this.__getUsers('./users/' + data.username + '.json');
 
       this.__checkUserInBase(data, users);
+    },
+
+    submitLogout: function () {
+      localStorage.setItem('isAuthenticated', 0);
+      this.isAuthenticated = false;
     },
 
     __getDataFromForm: function () {
@@ -57,51 +74,46 @@ var DEMO = DEMO || {};
     },
 
     __getUsers: function (url) {
-    // Return a new promise.
     return new Promise(function(resolve, reject) {
-      // Do the usual XHR stuff
       var req = new XMLHttpRequest();
       req.open('GET', url);
 
       req.onload = function() {
-        // This is called even on 404 etc
-        // so check the status
         if (req.status == 200) {
-          // Resolve the promise with the response text
           resolve(req.response);
         }
         else {
-          // Otherwise reject with the status text
-          // which will hopefully be a meaningful error
           reject(Error(req.statusText));
         }
       };
 
-      // Handle network errors
       req.onerror = function() {
-        reject(Error("Network Error"));
+        reject(Error("There is no such user"));
       };
 
-      // Make the request
       req.send();
     });
   },
 
     __checkUserInBase: function (data, users) {
+      var that = this;
       users.then(function(response) {
         var i;
         response = JSON.parse(response);
-        for (i = 0; i < response.users.length; i++) {
-          if (data.username === response.users[i].username && data.password === response.users[i].password) {
-            console.log("you are authorized as" + data.username);
-            break;
-          } else {
-            console.log("the authorization failed :(");
+          if (data.username === response.username && data.password === response.password) {
+            that.user.push(response);
+            localStorage.setItem('isAuthenticated', 1);
+            this.isAuthenticated = true;
           }
-        }
       }, function(error) {
         console.error("Failed!", error);
       });
+    },
+
+    __checkUserStatus: function () {
+      if (Number(localStorage.getItem('isAuthenticated'))) {
+        this.isAuthenticated = true;
+      }
     }
   }
 })();

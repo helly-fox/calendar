@@ -4,6 +4,8 @@ var DEMO = DEMO || {};
   DEMO.CalendarTemplate = function (config) {
     this.weekDaysName = (config) ? (config.weekDaysName || this.weekDaysName) : this.weekDaysName;
     this.monthNames = (config) ? (config.monthNames || this.monthNames) : this.monthNames;
+    this.calendarData = config.calendarData;
+    this.render();
   };
 
   DEMO.CalendarTemplate.prototype = {
@@ -11,8 +13,7 @@ var DEMO = DEMO || {};
     monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     weekDaysName: ['Mon', 'Tue', 'Wen', 'Thu', 'Fri', 'Sat', 'Sun'],
 
-    render: function (calendarData) {
-      this.calendarData = calendarData;
+    render: function () {
       var calendarElement = '<div class="calendar">';
       calendarElement += this.__renderHeader();
       calendarElement += this.__renderTable();
